@@ -1,10 +1,12 @@
 (ns biographer.core
   (:require [biographer.handler :as handler]
+            [biographer.app.core :as app]
             [luminus.repl-server :as repl]
             [luminus.http-server :as http]
             [biographer.config :refer [env]]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.tools.logging :as log]
+            [immutant.scheduling :refer :all]
             [mount.core :as mount])
   (:gen-class))
 
@@ -46,4 +48,7 @@
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 (defn -main [& args]
+  (schedule app/update-gh-bio-with-random-bio
+            (-> (in 10 :seconds)
+                (every 10 :minutes)))
   (start-app args))
