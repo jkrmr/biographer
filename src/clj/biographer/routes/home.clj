@@ -14,7 +14,7 @@
 (def github-api-user-path "/user")
 
 (defn home-page []
-  (layout/render "home.html"))
+  (layout/render "home.html" {:biographies ["one" "two"]}))
 
 (defn about-page []
   (layout/render "about.html"))
