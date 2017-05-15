@@ -5,7 +5,9 @@
 
   :dependencies [[compojure "1.6.0"]
                  [cprop "0.1.10"]
+                 [environ "1.1.0"]
                  [funcool/struct "1.0.0"]
+                 [http-kit "2.2.0"]
                  [luminus-immutant "0.2.3"]
                  [luminus-nrepl "0.1.4"]
                  [luminus/ring-ttl-session "0.3.2"]
@@ -36,6 +38,7 @@
   :main ^:skip-aot biographer.core
 
   :plugins [[lein-cprop "1.0.1"]
+            [lein-environ "1.1.0"]
             [lein-immutant "2.1.0"]]
 
   :profiles
