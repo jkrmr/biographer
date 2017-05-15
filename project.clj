@@ -4,11 +4,13 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[compojure "1.6.0"]
+                 [conman "0.6.3"]
                  [cprop "0.1.10"]
                  [environ "1.1.0"]
                  [funcool/struct "1.0.0"]
                  [http-kit "2.2.0"]
                  [luminus-immutant "0.2.3"]
+                 [luminus-migrations "0.3.3"]
                  [luminus-nrepl "0.1.4"]
                  [luminus/ring-ttl-session "0.3.2"]
                  [markdown-clj "0.9.99"]
@@ -18,6 +20,7 @@
                  [org.clojure/clojure "1.8.0"]
                  [org.clojure/tools.cli "0.3.5"]
                  [org.clojure/tools.logging "0.3.1"]
+                 [org.postgresql/postgresql "42.0.0"]
                  [org.webjars.bower/tether "1.4.0"]
                  [org.webjars/bootstrap "4.0.0-alpha.5"]
                  [org.webjars/font-awesome "4.7.0"]
@@ -36,10 +39,13 @@
   :resource-paths ["resources"]
   :target-path "target/%s/"
   :main ^:skip-aot biographer.core
+  :migratus {:store :database
+             :db ~(get (System/getenv) "DATABASE_URL")}
 
   :plugins [[lein-cprop "1.0.1"]
             [lein-environ "1.1.0"]
-            [lein-immutant "2.1.0"]]
+            [lein-immutant "2.1.0"]
+            [migratus-lein "0.4.7"]]
 
   :profiles
   {:uberjar {:omit-source true

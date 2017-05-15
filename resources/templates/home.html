@@ -1,25 +1,35 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row">
-  <div class="col-sm-12">
+<div class="row justify-content-md-center">
+  <div class="col col-4 col-md-auto">
     <form method="POST" action="/biographies">
       {% csrf-field %}
-      <input type="text"
-             name="content"
-             value=""
-             placeholder="pithy bio...">
-      <input type="submit">
+      <div class="input-group">
+
+        <input type="text"
+               name="content"
+               class="form-control"
+               value=""
+               placeholder="pithy bio...">
+
+        <span class="input-group-btn">
+          <button class="btn btn-primary" type="submit">
+            Submit
+          </button>
+        </span>
+      </div>
     </form>
   </div>
 </div>
 
-<hr/>
+<div style="height: 20px;">
+</div>
 
-<div class="row">
-  <div class="col-sm-12">
-    <ul>
+<div class="row justify-content-md-center">
+  <div class="col col-4 col-md-auto">
+    <ul class="list-group">
       {% for biography in biographies %}
-      <li>{{ biography }}</li>
+      <li class="list-group-item">{{ biography.content }}</li>
       {% endfor %}
     </ul>
   </div>

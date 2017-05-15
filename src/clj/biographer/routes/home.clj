@@ -5,6 +5,7 @@
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
             [clojure.java.io :as io]
+            [clojure.java.jdbc :as db]
             [clojure.data.json :as json]
             [org.httpkit.client :as http]))
 
@@ -13,8 +14,16 @@
 (def github-api-base-url "https://api.github.com" )
 (def github-api-user-path "/user")
 
+(defn insert-biography [input]
+  "Insert INPUT into the biographies table."
+  (db/insert! (env :database-url) :biographies {:content input}))
+
+(defn get-all-biographies []
+  "Query the database for all biography content, returning a vector of strings."
+  (db/query (env :database-url) ["select content from biographies"]))
+
 (defn home-page []
-  (layout/render "home.html" {:biographies ["one" "two"]}))
+  (layout/render "home.html" {:biographies (get-all-biographies)}))
 
 (defn about-page []
   (layout/render "about.html"))
@@ -32,5 +41,5 @@
                       (fn [{:keys [status headers body error]}]
                         (if error
                           (println "Failed: " error)
-                          (println "Success. Updated bio to : " content))))
+                          (insert-biography content))))
             (redirect "/")))))
