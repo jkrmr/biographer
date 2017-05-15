@@ -14,7 +14,7 @@
 (def github-api-base-url "https://api.github.com" )
 (def github-api-user-path "/user")
 
-(defn insert-biography [input]
+(defn insert-bio [input]
   "Insert INPUT into the biographies table."
   (db/insert! (env :database-url) :biographies {:content input}))
 
@@ -22,24 +22,30 @@
   "Query the database for all biography content, returning a vector of strings."
   (db/query (env :database-url) ["select content from biographies"]))
 
+(defn update-gh-bio [content]
+  (let [options {:headers
+                 {"Accept" github-api-version
+                  "Authorization" (str "token " github-api-token)}
+                 :body
+                 (json/write-str {"bio" content})}
+        url (str github-api-base-url github-api-user-path)]
+    (http/patch url options
+                (fn [{:keys [status headers body error]}]
+                  (if error (println "Failed: " error))))))
+
 (defn home-page []
   (layout/render "home.html" {:biographies (get-all-biographies)}))
 
 (defn about-page []
   (layout/render "about.html"))
 
+(defn add-bio [req]
+    (let [content (get-in req [:params :content])]
+      (insert-bio content)
+      (update-gh-bio content)
+      (redirect "/")))
+
 (defroutes home-routes
   (GET "/" [] (home-page))
   (GET "/about" [] (about-page))
-  (POST "/biographies" []
-        (fn [req]
-          (let [content (get-in req [:params :content])
-                options {:headers {"Accept" github-api-version
-                                   "Authorization" (str "token " github-api-token)}
-                         :body (json/write-str {"bio" content})}]
-            (http/patch (str github-api-base-url github-api-user-path) options
-                      (fn [{:keys [status headers body error]}]
-                        (if error
-                          (println "Failed: " error)
-                          (insert-biography content))))
-            (redirect "/")))))
+  (POST "/biographies" [] #(add-bio %)))
