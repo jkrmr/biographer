@@ -1,7 +1,6 @@
-(defproject biographer "0.1.0-SNAPSHOT"
-
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+(defproject biographer "0.1.0"
+  :description "Your GitHub bio, as-a-service."
+  :url "https://github.com/jkrmr/biographer"
 
   :dependencies [[compojure "1.6.0"]
                  [conman "0.6.3"]
@@ -33,7 +32,6 @@
                  [selmer "1.10.7"]]
 
   :min-lein-version "2.0.0"
-
   :jvm-opts ["-server" "-Dconf=.lein-env"]
   :source-paths ["src/clj"]
   :test-paths ["test/clj"]
