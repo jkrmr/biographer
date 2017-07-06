@@ -17,9 +17,11 @@
                  [metosin/ring-http-response "0.8.2"]
                  [mount "0.1.11"]
                  [org.clojure/clojure "1.8.0"]
+                 [org.clojure/clojurescript "1.9.562"]
                  [org.clojure/tools.cli "0.3.5"]
                  [org.clojure/tools.logging "0.3.1"]
                  [org.immutant/scheduling "2.1.6"]
+                 [org.omcljs/om "1.0.0-beta1"]
                  [org.postgresql/postgresql "42.0.0"]
                  [org.webjars.bower/tether "1.4.0"]
                  [org.webjars/bootstrap "4.0.0-alpha.5"]
@@ -35,13 +37,28 @@
   :jvm-opts ["-server" "-Dconf=.lein-env"]
   :source-paths ["src/clj"]
   :test-paths ["test/clj"]
-  :resource-paths ["resources"]
+  :resource-paths ["resources" "target/cljsbuild"]
+  :cljsbuild {:builds {:app {:source-paths ["src/cljs"]
+                             :compiler {:main (str project-ns ".app")
+                                        :asset-path "/js/out"
+                                        :output-to "target/cljsbuild/public/js/app.js"
+                                        :output-dir "target/cljsbuild/public/js/out"
+                                        :optimizations :none
+                                        :source-map true
+                                        :pretty-print true}}
+                       :min {:source-paths ["src/cljs"]
+                             :compiler {:output-to "target/cljsbuild/public/js/app.js"
+                                        :output-dir "target/uberjar"
+                                        :externs ["react/externs/react.js"]
+                                        :optimizations :advanced
+                                        :pretty-print false}}}}
   :target-path "target/%s/"
   :main ^:skip-aot biographer.core
   :migratus {:store :database
              :db ~(get (System/getenv) "DATABASE_URL")}
 
-  :plugins [[lein-cprop "1.0.1"]
+  :plugins [[lein-cljsbuild "1.1.3"]
+            [lein-cprop "1.0.1"]
             [lein-environ "1.1.0"]
             [lein-immutant "2.1.0"]
             [migratus-lein "0.4.7"]]
